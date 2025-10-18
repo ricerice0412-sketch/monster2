@@ -4,28 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Monster AR</title>
-
-  <!-- Google Model Viewer -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
-
   <style>
-    html, body {
-      margin: 0;
-      height: 100%;
-      background: #000;
-    }
-    model-viewer {
-      width: 100%;
-      height: 100%;
-    }
+    html, body { margin:0; height:100%; background:#000; }
+    model-viewer { width:100%; height:100%; }
   </style>
+  <meta name="theme-color" content="#000"/>
 </head>
-
 <body>
   <model-viewer
     id="mv"
-    src="https://ricerice0412-sketch.github.io/monster5/m5.glb"
-    ios-src="https://ricerice0412-sketch.github.io/monster5/m5.usdz"
     ar
     ar-modes="webxr scene-viewer quick-look"
     ar-scale="auto"
@@ -35,5 +23,24 @@
     shadow-intensity="1"
     environment-image="neutral">
   </model-viewer>
+
+  <script>
+    // —— 计算本页所在目录的绝对路径，并加时间戳避免缓存 —— //
+    const base = location.href.split('#')[0].split('?')[0].replace(/[^/]*$/, '');
+    const bust = 'v=' + Date.now();
+
+    const mv = document.getElementById('mv');
+    mv.src = `${base}m5.glb?${bust}`;           // 必填：Android/网页使用
+    // 如有 iPhone 的 USDZ，请取消下一行注释，并确保文件同目录且命名 m5.usdz
+    // mv.setAttribute('ios-src', `${base}m5.usdz?${bust}`);
+
+    // 可选：初始缩小一点，防止太大顶到相机
+    mv.addEventListener('load', () => {
+      mv.scale = '0.4 0.4 0.4';
+    });
+
+    // 调试：如果模型路径或权限有问题，会在控制台看到错误
+    mv.addEventListener('error', e => console.error('model-viewer error:', e.message));
+  </script>
 </body>
 </html>
